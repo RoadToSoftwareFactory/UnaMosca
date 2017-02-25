@@ -8,6 +8,7 @@ require 'set'
 
 require './parser'
 require './flight'
+require './algo'
 require './greedy'
 
 
