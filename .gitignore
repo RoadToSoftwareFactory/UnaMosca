@@ -50,6 +50,6 @@ build-iPhoneSimulator/
 .rvmrc
 
 .a.out
-data_200.txt
-
+data_*.txt
+karel
 random_500*
