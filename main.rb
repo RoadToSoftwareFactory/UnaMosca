@@ -3,6 +3,7 @@
 
 require 'pry'
 require 'pry-byebug'
+require 'benchmark'
 
 require 'set'
 
@@ -14,6 +15,19 @@ require './greedy'
 
 ret = Parser.parse(ARGV[0] || '/dev/stdin')
 
-g = Greedy.new(ret)
-p g.path
-p g.price
+
+ALGOS = [ Greedy ]
+
+ALGOS.each do |algo|
+  g = nil
+
+  measure = Benchmark.measure {
+    g = algo.new(ret)
+    g.run
+  }
+
+  puts "#{algo}: price = #{g.price}; time = #{measure.total}"
+  p g.path
+
+  puts
+end
