@@ -13,4 +13,11 @@ class Algo
   def price
     path.map { |f| f.price }.reduce(:+)
   end
+
+  def output
+    puts price
+    path.each do |f|
+      puts f
+    end
+  end
 end

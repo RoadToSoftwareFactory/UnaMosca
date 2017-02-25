@@ -26,8 +26,8 @@ ALGOS.each do |algo|
     g.run
   }
 
-  puts "#{algo}: price = #{g.price}; time = #{measure.total}"
-  p g.path
+  $stderr.puts "#{algo}: price = #{g.price}; time = #{measure.total}"
+  g.output
 
   puts
 end
