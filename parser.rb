@@ -9,11 +9,17 @@ class Parser
         start = line.chomp
         next
       end
+
       from, to, day, price = *line.split(/\s+/)
-      if flights[day.to_i] == nil
-        flights[day.to_i] = []
+      day = day.to_i
+      price = price.to_i
+
+      if flights[day] == nil
+        flights[day] = []
       end
-      flights[day.to_i].push(Flight.new(from, to, day, price))
+
+      flights[day].push(Flight.new(from, to, day, price))
+
       cities.push(from)
       cities.push(to)
       end
