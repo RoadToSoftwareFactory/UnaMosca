@@ -1,4 +1,8 @@
 class Greedy < Algo
+  def get_cheapest(possible)
+    possible.min_by{|k,v| v.price}
+  end
+
   def run
     path = []
     current = @start
@@ -32,7 +36,7 @@ class Greedy < Algo
         next
       end
 
-      cheapest = possible.min_by{|k,v| v.price}
+      cheapest = get_cheapest(possible)
 
       path << possible[cheapest.first]
       current = cheapest.last.to

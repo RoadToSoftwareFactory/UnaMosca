@@ -12,13 +12,14 @@ require './preprocessor'
 require './flight'
 require './algo'
 require './greedy'
+require './random_greedy'
 
 
 ret = Parser.parse(ARGV[0] || '/dev/stdin')
 ret[:flights] = Preprocessor.process(ret)
 
 
-ALGOS = [ Greedy ]
+ALGOS = [ Greedy, RandomGreedy, RandomGreedy ,RandomGreedy ,RandomGreedy ,RandomGreedy ,RandomGreedy  ]
 
 ALGOS.each do |algo|
   g = nil
