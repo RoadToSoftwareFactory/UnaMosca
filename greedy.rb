@@ -16,29 +16,27 @@ class Greedy < Algo
         visited.delete(@start)
       end
 
-      possible = @flights[day].select do |f|
-        f.from == current and
-        !visited.include?(f.to) and
-        !blacklist[day].include?(f)
+      possible = @flights[day][current.to_sym].select do |f|
+        !visited.include?(f.to_s) and
+        !blacklist[day].include?(f.to_s)
       end
 
       if possible.empty?
-        visited.delete(current)
+        visited.delete(current.to_s)
         last = path.pop
         current = last.from
 
         day -= 1
-        blacklist[day].add last
+        blacklist[day].add last.to_s
 
         next
       end
 
-      cheapest = possible.sort_by { |f| f.price }.first
+      cheapest = possible.min_by{|k,v| v.price}
 
-      path << cheapest
-      current = cheapest.to
-      visited.add current
-
+      path << possible[cheapest.first]
+      current = cheapest.last.to
+      visited.add current.to_s
       day += 1
     end
 
