@@ -1,6 +1,6 @@
 class Greedy < Algo
   def get_cheapest(possible)
-    possible.min_by{|k,v| v.price}
+    possible.min_by { |v| v.price }
   end
 
   def run
@@ -20,8 +20,8 @@ class Greedy < Algo
         visited.delete(@start)
       end
 
-      possible = @flights[day][current].select do |f|
-        !visited.include?(f) and
+      possible = @flights[day][current].values.select do |f|
+        !visited.include?(f.to) and
         !blacklist[day].include?(f)
       end
 
@@ -38,8 +38,8 @@ class Greedy < Algo
 
       cheapest = get_cheapest(possible)
 
-      path << possible[cheapest.first]
-      current = cheapest.last.to
+      path << cheapest
+      current = cheapest.to
       visited.add current
       day += 1
     end
