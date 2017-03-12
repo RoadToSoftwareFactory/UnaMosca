@@ -14,9 +14,16 @@ require './algo'
 require './greedy'
 require './random_greedy'
 
+ret = nil
+measure = Benchmark.measure {
+  ret = Parser.parse(ARGV[0] || '/dev/stdin')
+}
+$stderr.puts "Parser: time = #{measure.total}"
 
-ret = Parser.parse(ARGV[0] || '/dev/stdin')
-ret[:flights] = Preprocessor.process(ret)
+measure = Benchmark.measure {
+  ret[:flights] = Preprocessor.process(ret)
+}
+$stderr.puts "Preprocessor: time = #{measure.total}"
 
 
 ALGOS = [ Greedy, RandomGreedy, RandomGreedy ,RandomGreedy ,RandomGreedy ,RandomGreedy ,RandomGreedy  ]
