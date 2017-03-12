@@ -11,7 +11,7 @@ class Preprocessor
         intersection = targets & Set.new(destinations.keys)
         next if intersection.empty?
 
-        next_targets.add(from)
+        next_targets.add(from) if day == 0 || from != start
 
         destinations.keys.each do |to|
           destinations.delete(to) unless targets.include?(to)
@@ -41,10 +41,30 @@ class Preprocessor
     end.reduce(:+)
   end
 
+  def self.verify(start:, flights:, days:, **_)
+    raise "lety jen ze startovniho mesta prvni den" if flights[0].keys != [start]
+
+    flights.each_with_index do |day, index|
+      next if index == 0
+
+      raise "zadne lety ze startovniho mesta mimo prvni den" if day.keys.include? start
+    end
+
+    raise "lety jen do startovniho mesta posledni den" if flights[days - 1].values.map(&:keys).flatten.uniq != [start]
+
+    flights.each_with_index do |day, index|
+      next if index == days - 1
+
+      raise "zadne lety do startovniho mesta mimo posledni den" if day.values.map(&:keys).include? start
+    end
+  end
+
   def self.process(args)
     before = count(args[:flights])
     result = stuff(args)
     after = count(result)
+
+    verify(args)
 
     $stderr.puts([before, after, ((after.to_f / before.to_f) * 100).to_i.to_s + "%"].inspect)
 
