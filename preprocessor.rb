@@ -4,7 +4,6 @@ class Preprocessor
     targets = Set.new([start])
 
     while day >= 0 do
-      p({ :day => day, :targets => targets })
       next_targets = Set.new
 
       flights[day].each do |from, destinations|
