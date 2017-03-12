@@ -8,12 +8,14 @@ require 'benchmark'
 require 'set'
 
 require './parser'
+require './preprocessor'
 require './flight'
 require './algo'
 require './greedy'
 
 
 ret = Parser.parse(ARGV[0] || '/dev/stdin')
+ret[:flights] = Preprocessor.process(ret[:start], ret[:flights])
 
 
 ALGOS = [ Greedy ]
