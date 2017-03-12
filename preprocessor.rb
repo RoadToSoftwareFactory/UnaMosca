@@ -1,35 +1,81 @@
 class Preprocessor
-  def self.stuff(start:, days:, flights:, cities:)
+  def self.filter(magic, start:, days:, flights:, cities:)
+    flights.each_with_index do |froms, day|
+      froms.keys.each do |from|
+        froms.delete(from) unless magic[day][:from].include?(from)
+      end
+
+      froms.each do |from, tos|
+        tos.keys.each do |to|
+          tos.delete(to) unless magic[day][:to].include?(to)
+        end
+
+        froms.delete(from) if tos.keys.empty?
+      end
+    end
+
+    flights
+  end
+
+  def self.magic_backward(start:, days:, flights:, cities:)
     day = days - 1
     targets = Set.new([start])
+    magic = []
 
     while day >= 0 do
       next_targets = Set.new
+
+      magic[day] = {:from => next_targets, :to => targets}
 
       flights[day].each do |from, destinations|
         intersection = targets & Set.new(destinations.keys)
         next if intersection.empty?
 
         next_targets.add(from) if day == 0 || from != start
-
-        destinations.keys.each do |to|
-          destinations.delete(to) unless targets.include?(to)
-        end
-      end
-
-      flights[day].keys.each do |from|
-        flights[day].delete(from) unless next_targets.include?(from)
       end
 
       targets = next_targets
       day -= 1
     end
 
-    flights[0].keys.each do |from|
-      flights[0].delete(from) unless from == start
+    magic[0][:from] = Set.new([start])
+
+    magic
+  end
+
+  def self.magic_forward(start:, days:, flights:, cities:)
+    day = 0
+    sources = Set.new([start])
+    magic = []
+
+    while day < days do
+      next_sources = Set.new
+
+      magic[day] = {:from => sources, :to => next_sources}
+
+      flights[day].each do |from, destinations|
+        next unless sources.include? from
+
+        next_sources.merge(destinations.keys)
+      end
+
+      sources = next_sources
+      day += 1
     end
 
-    flights
+    magic[days - 1][:to] = Set.new([start])
+
+    magic
+  end
+
+  def self.magic(args)
+    forward = magic_forward(args)
+    backward = magic_backward(args)
+
+    0.upto(args[:days] - 1).map do |day|
+      {:from => forward[day][:from] & backward[day][:from],
+       :to => forward[day][:to] & backward[day][:to]}
+    end
   end
 
   def self.count(data)
@@ -60,7 +106,8 @@ class Preprocessor
 
   def self.process(args)
     before = count(args[:flights])
-    result = stuff(args)
+    magic = magic(args)
+    result = filter(magic, args)
     after = count(result)
 
     verify(args)
