@@ -2,7 +2,7 @@ class Parser
   def self.parse(filename)
     start = nil
     flights = []
-    cities = []
+    cities = Set.new
 
     File.readlines(filename).each do |line|
       if start.nil?
@@ -11,19 +11,18 @@ class Parser
       end
 
       from, to, day, price = *line.split(/\s+/)
+      from = from.to_sym
+      to = to.to_sym
       day = day.to_i
       price = price.to_i
 
-      if flights[day] == nil
-        flights[day] = []
-      end
+      flights[day] ||= {}
+      flights[day][from] ||= {}
+      flights[day][from][to] = Flight.new(from, to, day, price)
 
-      flights[day].push(Flight.new(from, to, day, price))
-
-      cities.push(from)
-      cities.push(to)
+      cities.add(from)
+      cities.add(to)
     end
-    cities.uniq!
 
     {:start => start, :flights => flights, :days => flights.length, :cities => cities}
   end

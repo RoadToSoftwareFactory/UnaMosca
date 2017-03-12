@@ -32,12 +32,20 @@ class Preprocessor
     flights
   end
 
-  def self.process(start, flights)
-    before = flights.flatten.length
-    result = process_data(start, flights)
-    after = result.flatten.length
+  def self.count(data)
+    data.map do |day|
+      day.values.map do |city|
+        city.values.length
+      end.reduce(:+)
+    end.reduce(:+)
+  end
 
-    $stderr.print(before, after, ((after.to_f / before.to_f) * 100).to_i.to_s + "%")
+  def self.process(start, flights)
+    before = count(flights)
+    result = flights #TODO process_data(start, flights)
+    after = count(result)
+
+    $stderr.puts([before, after, ((after.to_f / before.to_f) * 100).to_i.to_s + "%"].inspect)
 
     result
   end
