@@ -6,7 +6,7 @@ class Parser
 
     File.readlines(filename).each do |line|
       if start.nil?
-        start = line.chomp
+        start = line.chomp.to_sym
         next
       end
 

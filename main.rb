@@ -15,7 +15,7 @@ require './greedy'
 
 
 ret = Parser.parse(ARGV[0] || '/dev/stdin')
-ret[:flights] = Preprocessor.process(ret[:start], ret[:flights])
+ret[:flights] = Preprocessor.process(ret)
 
 
 ALGOS = [ Greedy ]

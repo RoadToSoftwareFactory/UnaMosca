@@ -1,32 +1,33 @@
 class Preprocessor
-  def self.has_any_flight_out(flights, index, flight)
-    flights[index + 1].any?{ |after_flight| after_flight.from == flight.to}
-  end
+  def self.stuff(start:, days:, flights:, cities:)
+    day = days - 1
+    targets = Set.new([start])
 
-  def self.has_any_flight_in(flights, index, flight)
-    flights[index - 1].any?{ |before_flight| before_flight.to == flight.from}
-  end
+    while day >= 0 do
+      p({ :day => day, :targets => targets })
+      next_targets = Set.new
 
-  def self.process_data(start, flights)
-    flights.first.delete_if{ |flight| flight.from != start }
-    flights.last.delete_if{ |flight| flight.to != start }
+      flights[day].each do |from, destinations|
+        intersection = targets & Set.new(destinations.keys)
+        next if intersection.empty?
 
-    stuff_to_remove = true
-    while stuff_to_remove do
-      stuff_to_remove = false
-      flights.each_with_index do |f, index|
-        f.delete_if do |flight|
-          if index == 0
-            no_way = !has_any_flight_out(flights, index, flight)
-          elsif index + 1 == flights.length
-            no_way = !has_any_flight_in(flights, index, flight)
-          else
-            no_way = !(has_any_flight_in(flights, index, flight) && has_any_flight_out(flights, index, flight))
-          end
-          stuff_to_remove = true if no_way
-          no_way
+        next_targets.add(from)
+
+        destinations.keys.each do |to|
+          destinations.delete(to) unless targets.include?(to)
         end
       end
+
+      flights[day].keys.each do |from|
+        flights[day].delete(from) unless next_targets.include?(from)
+      end
+
+      targets = next_targets
+      day -= 1
+    end
+
+    flights[0].keys.each do |from|
+      flights[0].delete(from) unless from == start
     end
 
     flights
@@ -40,9 +41,9 @@ class Preprocessor
     end.reduce(:+)
   end
 
-  def self.process(start, flights)
-    before = count(flights)
-    result = flights #TODO process_data(start, flights)
+  def self.process(args)
+    before = count(args[:flights])
+    result = stuff(args)
     after = count(result)
 
     $stderr.puts([before, after, ((after.to_f / before.to_f) * 100).to_i.to_s + "%"].inspect)
