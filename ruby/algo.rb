@@ -4,7 +4,6 @@ class Algo
     @days = days
     @flights = flights
     @cities = cities
-
   end
 
   def path

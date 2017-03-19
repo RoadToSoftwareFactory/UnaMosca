@@ -105,12 +105,7 @@ class Preprocessor
   end
 
   def self.process(args)
-    before = count(args[:flights])
     magic = magic(args)
-    result = filter(magic, args)
-    after = count(result)
-    
-
-    result
+    filter(magic, args)
   end
 end
