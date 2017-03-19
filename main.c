@@ -1,5 +1,6 @@
 #include <ctype.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,15 +19,18 @@ static int ncities = 0;
 static char cities[300][4];
 static Flight days[300][300][300];
 
+static int16_t citymagic[26][26][26];
+
 int
 find(char *city) {
-	for (int i = 0; i < ncities; i++) {
-		if (strcmp(cities[i], city) == 0)
-			return i;
-	}
+	int16_t mag = citymagic[city[0] - 'A'][city[1] - 'A'][city[2] - 'A'];
+	if (mag != 0)
+		return mag - 1;
 
-	strcpy(cities[ncities], city);
-	return ncities++;	// not ++ncities
+	strcpy(cities[ncities++], city);
+	citymagic[city[0] - 'A'][city[1] - 'A'][city[2] - 'A'] = ncities;
+
+	return ncities - 1;
 }
 
 void
