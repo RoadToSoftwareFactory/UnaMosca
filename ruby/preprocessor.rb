@@ -109,10 +109,7 @@ class Preprocessor
     magic = magic(args)
     result = filter(magic, args)
     after = count(result)
-
-    verify(args)
-
-    $stderr.puts([before, after, ((after.to_f / before.to_f) * 100).to_i.to_s + "%"].inspect)
+    
 
     result
   end

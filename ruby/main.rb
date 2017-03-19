@@ -14,30 +14,28 @@ require './algo'
 require './greedy'
 require './random_greedy'
 
+time = Time.now
 ret = nil
-measure = Benchmark.measure {
   ret = Parser.parse(ARGV[0] || '/dev/stdin')
-}
-$stderr.puts "Parser: time = #{measure.total}"
 
-measure = Benchmark.measure {
   ret[:flights] = Preprocessor.process(ret)
-}
-$stderr.puts "Preprocessor: time = #{measure.total}"
 
+is_running_out = Time.now
 
-ALGOS = [ Greedy, RandomGreedy, RandomGreedy ,RandomGreedy ,RandomGreedy ,RandomGreedy ,RandomGreedy  ]
+ALGOS =[ RandomGreedy, RandomGreedy ,RandomGreedy ,RandomGreedy ,RandomGreedy ,RandomGreedy  ]
 
-ALGOS.each do |algo|
-  g = nil
+final = Greedy.new(ret)
+final.run
 
-  measure = Benchmark.measure {
+begin
+  ALGOS.each do |algo|
+    g = nil
     g = algo.new(ret)
     g.run
-  }
+    final = g if g.price < final.price
+  end
+  needed_time = (Time.now.to_f - is_running_out.to_f).to_i
+  is_running_out = Time.now
+end while (is_running_out.to_f - time.to_f).to_i < 30 - needed_time - 1
 
-  $stderr.puts "#{algo}: price = #{g.price}; time = #{measure.total}"
-  g.output
-
-  puts
-end
+final.output
