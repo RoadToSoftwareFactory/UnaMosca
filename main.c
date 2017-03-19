@@ -67,11 +67,13 @@ parse() {
 
 			case 5:
 				f = (Flight) {
-					exists: false,
-					from: {0, 0, 0, 0},
-					to: {0, 0, 0, 0},
-					day: 0,
-					price: 0,
+					.exists = false,
+					.from = {0, 0, 0, 0},
+					.to = {0, 0, 0, 0},
+					.f = 0,
+					.t = 0,
+					.day = 0,
+					.price = 0,
 				};
 
 				p = f.from;
