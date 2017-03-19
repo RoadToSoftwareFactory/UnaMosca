@@ -10,7 +10,7 @@ class Parser
         next
       end
 
-      from, to, day, price = *line.split(/\s+/)
+      from, to, day, price = *line.split(' ')
       from = from.to_sym
       to = to.to_sym
       day = day.to_i

@@ -15,7 +15,7 @@ def parse(filename)
       next
     end
 
-    flights << Flight.new(*line.split(/\s+/))
+    flights << Flight.new(*line.split(' '))
   end
 
   {:start => start, :flights => flights}
